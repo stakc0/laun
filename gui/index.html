@@ -1,43 +1,52 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>laun</title>
-  <style>
-    :root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; }
-    * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #09090b; color: #fafafa; }
-    main { width: min(92vw, 560px); padding: 32px; border: 1px solid #27272a; border-radius: 24px; background: #18181b; }
-    h1 { margin: 0 0 8px; font-size: 3rem; letter-spacing: -.06em; }
-    p { color: #a1a1aa; }
-    label { display: block; margin-top: 18px; color: #d4d4d8; }
-    input { width: 100%; margin-top: 8px; padding: 12px; border: 1px solid #3f3f46; border-radius: 10px; background: #09090b; color: #fff; }
-    button { width: 100%; margin-top: 24px; padding: 13px; border: 0; border-radius: 10px; background: #fafafa; color: #09090b; font-weight: 700; cursor: pointer; }
-    #result { min-height: 24px; white-space: pre-wrap; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pump.fun Launcher</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input, button { width: 100%; padding: 10px; box-sizing: border-box; }
+        button { background-color: #007BFF; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+    </style>
 </head>
 <body>
-  <main>
-    <h1>laun</h1>
-    <p>Generate a safe dry-run launch plan. No wallet keys or transactions are requested.</p>
-    <form id="form">
-      <label>Name <input id="name" maxlength="32" required></label>
-      <label>Symbol <input id="symbol" maxlength="10" required></label>
-      <button type="submit">Generate plan</button>
-    </form>
-    <p id="result" role="status"></p>
-  </main>
-  <script>
-    const form = document.querySelector('#form');
-    const result = document.querySelector('#result');
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      result.textContent = 'Generating…';
-      const response = await fetch('/api/launch', { method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({ name: name.value, symbol: symbol.value }) });
-      const data = await response.json();
-      result.textContent = response.ok ? JSON.stringify(data, null, 2) : (data.error || 'Request failed');
-    });
-  </script>
+    <div class="container">
+        <h1>Pump.fun Launcher</h1>
+        <form id="launchForm">
+            <div class="form-group">
+                <label for="tokenName">Token Name</label>
+                <input type="text" id="tokenName" name="tokenName" required>
+            </div>
+            <div class="form-group">
+                <label for="tokenSymbol">Token Symbol</label>
+                <input type="text" id="tokenSymbol" name="tokenSymbol" required>
+            </div>
+            <div class="form-group">
+                <label for="walletSecret">Wallet Secret Key</label>
+                <input type="text" id="walletSecret" name="walletSecret" required>
+            </div>
+            <button type="submit">Launch Token</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('launchForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const tokenName = document.getElementById('tokenName').value;
+            const tokenSymbol = document.getElementById('tokenSymbol').value;
+            const walletSecret = document.getElementById('walletSecret').value;
+            fetch('/launch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tokenName, tokenSymbol, walletSecret })
+            }).then(response => response.json())
+              .then(data => alert(data.message))
+              .catch(error => console.error('Error:', error));
+        });
+    </script>
 </body>
 </html>
