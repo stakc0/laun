@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import subprocess
 
-app = Flask(__name__)
+app = Flask(name)
 
 @app.route('/launch', methods=['POST'])
 def launch_token():
@@ -18,5 +18,5 @@ def launch_token():
     else:
         return jsonify({'message': 'Error launching token', 'error': result.stderr}), 500
 
-if __name__ == '__main__':
+if name == 'main':
     app.run(host='0.0.0.0', port=5000)

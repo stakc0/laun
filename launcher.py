@@ -31,12 +31,12 @@ from solana.keypair import Keypair
 from solana.transaction import Transaction
 from solana.system_program import CreateAccountWithSeedParams, create_account_with_seed
 
-# Load wallets from a JSON file
+Load wallets from a JSON file
 def load_wallets(file_path):
     with open(file_path, 'r') as f:
         return json.load(f)
 
-# Create a new token
+Create a new token
 def create_token(client, payer, mint_authority, decimals, name, symbol):
     tx = Transaction()
     tx.add(create_account_with_seed(
@@ -61,7 +61,7 @@ def create_token(client, payer, mint_authority, decimals, name, symbol):
     result = client.send_transaction(tx, TxOpts(skip_confirmation=False, skip_preflight=False, commitment=Confirmed))
     return result['result']
 
-# Sell tokens
+Sell tokens
 def sell_tokens(client, payer, mint, amount, price, buyer):
     tx = Transaction()
     tx.add(create_account_with_seed(
@@ -86,7 +86,7 @@ def sell_tokens(client, payer, mint, amount, price, buyer):
     result = client.send_transaction(tx, TxOpts(skip_confirmation=False, skip_preflight=False, commitment=Confirmed))
     return result['result']
 
-# Snipe tokens
+Snipe tokens
 def snipe_tokens(client, payer, mint, amount, price, seller):
     tx = Transaction()
     tx.add(create_account_with_seed(
@@ -111,32 +111,32 @@ def snipe_tokens(client, payer, mint, amount, price, seller):
     result = client.send_transaction(tx, TxOpts(skip_confirmation=False, skip_preflight=False, commitment=Confirmed))
     return result['result']
 
-# Shuffle distribution
+Shuffle distribution
 def shuffle_distribution(wallets, amount):
     import random
     random.shuffle(wallets)
     return [wallet for wallet in wallets[:amount]]
 
-# Main function
+Main function
 def main():
     client = AsyncClient('https://api.mainnet-beta.solana.com')
     wallets = load_wallets('/root/.hermes/workspace/launch/wallets.json')
     payer = Keypair.from_secret_key(bytes.fromhex('YOUR_PAYER_SECRET_KEY'))
     mint_authority = Keypair.from_secret_key(bytes.fromhex('YOUR_MINT_AUTHORITY_SECRET_KEY'))
 
-    # Create a new token
+    Create a new token
     mint = create_token(client, payer, mint_authority, 9, 'NewToken', 'NTK')
     print(f'Mint: {mint}')
 
-    # Sell tokens
+    Sell tokens
     sell_tokens(client, payer, mint, 1000, 0.1, wallets[0])
 
-    # Snipe tokens
+    Snipe tokens
     snipe_tokens(client, payer, mint, 1000, 0.1, wallets[1])
 
-    # Shuffle distribution
+    Shuffle distribution
     shuffled_wallets = shuffle_distribution(wallets, 10)
     print(f'Shuffled Wallets: {shuffled_wallets}')
 
-if __name__ == '__main__':
+if name == 'main':
     main()
